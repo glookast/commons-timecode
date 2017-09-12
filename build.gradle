@@ -3,7 +3,7 @@ apply plugin: "maven"
 apply plugin: "signing"
 
 group = "com.glookast.commons"
-version = "1.0.0"
+version = "1.1.0"
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
@@ -12,6 +12,14 @@ jar {
     manifest {
         attributes "Implementation-Version": version
     }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile "junit:junit:4.12"
 }
 
 task javadocJar(type: Jar) {
