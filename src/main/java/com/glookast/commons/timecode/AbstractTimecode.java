@@ -238,15 +238,10 @@ public abstract class AbstractTimecode implements Serializable
         long frameNumber = myFrameNumber;
 
         if (myDropFrame) {
-            long minutes = (frameNumber / myFramesPerTenMinutes) * 10;
-            long remaining = frameNumber % myFramesPerTenMinutes;
-
-            while (remaining >= myFramesPerMinute) {
-                minutes++;
-                remaining -= myFramesPerMinuteDropFrame;
-            }
-
-            frameNumber = (minutes * 60 * myTimecodeBase) + remaining;
+            long tenMinutesFrames = frameNumber / myFramesPerTenMinutes;
+            long remainingMinutes = ((frameNumber % myFramesPerTenMinutes) - myAdjustmentPerMinute) / myFramesPerMinuteDropFrame;
+            long dropIncidents = 9 * tenMinutesFrames + remainingMinutes;
+            frameNumber += myAdjustmentPerMinute * dropIncidents;
         }
 
         myFrames = (int)(frameNumber % myTimecodeBase);
