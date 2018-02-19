@@ -64,7 +64,7 @@ public class TimecodeDuration extends AbstractTimecode implements Serializable
     public static TimecodeDuration valueOf(String timecode) throws IllegalArgumentException
     {
         TimecodeDuration td = new TimecodeDuration();
-        return (TimecodeDuration)td.parse(timecode);
+        return (TimecodeDuration) td.parse(timecode);
     }
 
     /**
@@ -80,7 +80,7 @@ public class TimecodeDuration extends AbstractTimecode implements Serializable
     public static TimecodeDuration valueOf(String timecode, int timecodeBase) throws IllegalArgumentException
     {
         TimecodeDuration td = new TimecodeDuration();
-        return (TimecodeDuration)td.parse(timecode, timecodeBase);
+        return (TimecodeDuration) td.parse(timecode, timecodeBase);
     }
 
     @Override

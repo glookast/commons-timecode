@@ -32,8 +32,9 @@ public abstract class AbstractTimecode implements Serializable
 
     public AbstractTimecode(int timecodeBase, boolean dropFrame)
     {
-        if (timecodeBase < 1)
+        if (timecodeBase < 1) {
             timecodeBase = 1;
+        }
 
         myTimecodeBase = timecodeBase;
 
@@ -95,6 +96,7 @@ public abstract class AbstractTimecode implements Serializable
 
     /**
      * Gets the frame number for current timecode
+     *
      * @return Frame number
      */
     public final long getFrameNumber()
@@ -104,6 +106,7 @@ public abstract class AbstractTimecode implements Serializable
 
     /**
      * Sets the timecode to the current frame number
+     *
      * @param frameNumber Frame number
      */
     public final void setFrameNumber(long frameNumber)
@@ -124,6 +127,7 @@ public abstract class AbstractTimecode implements Serializable
 
     /**
      * Sets the timecode to the provided hours, minutes, seconds and frames
+     *
      * @param hours
      * @param minutes
      * @param seconds
@@ -175,6 +179,7 @@ public abstract class AbstractTimecode implements Serializable
 
     /**
      * Gets the frames component of the timecode
+     *
      * @return frames
      */
     public final int getFrames()
@@ -184,6 +189,7 @@ public abstract class AbstractTimecode implements Serializable
 
     /**
      * Sets the Frames component of the timecode
+     *
      * @param frames
      */
     public final void setFrames(int frames)
@@ -244,12 +250,12 @@ public abstract class AbstractTimecode implements Serializable
             frameNumber += myAdjustmentPerMinute * dropIncidents;
         }
 
-        myFrames = (int)(frameNumber % myTimecodeBase);
+        myFrames = (int) (frameNumber % myTimecodeBase);
         frameNumber = (frameNumber / myTimecodeBase);
-        mySeconds = (int)(frameNumber % 60);
+        mySeconds = (int) (frameNumber % 60);
         frameNumber = (frameNumber / 60);
-        myMinutes = (int)(frameNumber % 60);
-        myHours = (int)(frameNumber / 60);
+        myMinutes = (int) (frameNumber % 60);
+        myHours = (int) (frameNumber / 60);
     }
 
     protected abstract long truncateFrameNumber(long value);
@@ -429,14 +435,17 @@ public abstract class AbstractTimecode implements Serializable
 
     public static int compare(AbstractTimecode t1, AbstractTimecode t2)
     {
-        if (t1 == null && t2 == null)
+        if (t1 == null && t2 == null) {
             return 0;
+        }
 
-        if (t1 == null)
+        if (t1 == null) {
             return -1;
+        }
 
-        if (t2 == null)
+        if (t2 == null) {
             return 1;
+        }
 
         long diff = t1.myFrameNumber - t2.myFrameNumber;
         if (diff > 0) {
