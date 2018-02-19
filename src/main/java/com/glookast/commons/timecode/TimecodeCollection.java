@@ -7,6 +7,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
+import java.util.Objects;
 
 
 /**
@@ -30,7 +31,7 @@ import java.io.Serializable;
  * </pre>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "TimecodeCollection", propOrder = {
+@XmlType(name = "TimecodeCollection", namespace = "http://timecode.commons.glookast.com", propOrder = {
     "ltc",
     "vitc",
     "tod",
@@ -159,4 +160,37 @@ public class TimecodeCollection implements Serializable
         this.rs422 = value;
     }
 
+    @Override
+    public String toString()
+    {
+        return "TimecodeCollection{" +
+               "ltc=" + ltc +
+               ", vitc=" + vitc +
+               ", tod=" + tod +
+               ", rs422=" + rs422 +
+               '}';
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        TimecodeCollection that = (TimecodeCollection) o;
+        return Objects.equals(ltc, that.ltc) &&
+               Objects.equals(vitc, that.vitc) &&
+               Objects.equals(tod, that.tod) &&
+               Objects.equals(rs422, that.rs422);
+    }
+
+    @Override
+    public int hashCode()
+    {
+
+        return Objects.hash(ltc, vitc, tod, rs422);
+    }
 }

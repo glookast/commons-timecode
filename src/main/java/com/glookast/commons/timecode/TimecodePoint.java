@@ -4,6 +4,7 @@ package com.glookast.commons.timecode;
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
+import java.util.Objects;
 
 
 /**
@@ -26,7 +27,7 @@ import java.io.Serializable;
  * </pre>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "TimecodePoint", propOrder = {
+@XmlType(name = "TimecodePoint", namespace = "http://timecode.commons.glookast.com", propOrder = {
     "timecodeSource",
     "timecode",
     "position"
@@ -120,4 +121,35 @@ public class TimecodePoint implements Serializable
         this.position = value;
     }
 
+    @Override
+    public String toString()
+    {
+        return "TimecodePoint{" +
+               "timecodeSource=" + timecodeSource +
+               ", timecode=" + timecode +
+               ", position=" + position +
+               '}';
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        TimecodePoint that = (TimecodePoint) o;
+        return position == that.position &&
+               timecodeSource == that.timecodeSource &&
+               Objects.equals(timecode, that.timecode);
+    }
+
+    @Override
+    public int hashCode()
+    {
+
+        return Objects.hash(timecodeSource, timecode, position);
+    }
 }

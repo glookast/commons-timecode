@@ -22,7 +22,7 @@ import javax.xml.bind.annotation.XmlType;
  * &lt;/simpleType&gt;
  * </pre>
  */
-@XmlType(name = "TimecodeSource")
+@XmlType(name = "TimecodeSource", namespace = "http://timecode.commons.glookast.com")
 @XmlEnum
 public enum TimecodeSource
 {
