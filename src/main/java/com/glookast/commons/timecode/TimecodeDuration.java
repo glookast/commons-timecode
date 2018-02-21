@@ -54,35 +54,6 @@ public class TimecodeDuration extends AbstractTimecode implements Serializable
         return value;
     }
 
-    /**
-     * Returns a TimecodeDuration instance for given TimecodeDuration storage string. Will return null in case the storage string represents a null TimecodeDuration
-     *
-     * @param timecode
-     * @return the TimecodeDuration
-     * @throws IllegalArgumentException
-     */
-    public static TimecodeDuration valueOf(String timecode) throws IllegalArgumentException
-    {
-        TimecodeDuration td = new TimecodeDuration();
-        return (TimecodeDuration)td.parse(timecode);
-    }
-
-    /**
-     * Returns a TimecodeDuration instance for given TimecodeDuration string and TimecodeDuration base. Acceptable inputs are
-     * the normal representation xx:xx:xx:xx for non drop frame and xx:xx:xx;xx for drop frame
-     * and SMPTE331M representation which uses binary coded decimals
-     *
-     * @param timecode
-     * @param timecodeBase
-     * @return the TimecodeDuration
-     * @throws IllegalArgumentException
-     */
-    public static TimecodeDuration valueOf(String timecode, int timecodeBase) throws IllegalArgumentException
-    {
-        TimecodeDuration td = new TimecodeDuration();
-        return (TimecodeDuration)td.parse(timecode, timecodeBase);
-    }
-
     @Override
     public boolean equals(Object obj)
     {
@@ -93,5 +64,48 @@ public class TimecodeDuration extends AbstractTimecode implements Serializable
             return false;
         }
         return super.equals(obj);
+    }
+
+    /**
+     * Returns a TimecodeDuration instance for given TimecodeDuration storage string. Will return null in case the storage string represents a null TimecodeDuration
+     *
+     * @param timecode
+     * @return the TimecodeDuration
+     * @throws IllegalArgumentException
+     */
+    public static TimecodeDuration valueOf(String timecode) throws IllegalArgumentException
+    {
+        TimecodeDuration td = new TimecodeDuration();
+        return (TimecodeDuration) td.parse(timecode);
+    }
+
+    /**
+     * Returns a TimecodeDuration instance for given timecode string and timecode base. Acceptable inputs are
+     * the normal representation HH:MM:SS:FF for non drop frame and HH:MM:SS:FF for drop frame
+     *
+     * @param timecode
+     * @param timecodeBase
+     * @return the TimecodeDuration
+     * @throws IllegalArgumentException
+     */
+    public static TimecodeDuration valueOf(String timecode, int timecodeBase) throws IllegalArgumentException
+    {
+        return valueOf(timecode, timecodeBase, StringType.Normal);
+    }
+
+    /**
+     * Returns a TimecodeDuration instance for given timecode string and timecode base.
+     * What is considered acceptable input varies per selected StringType
+     *
+     * @param timecode
+     * @param timecodeBase
+     * @param stringType
+     * @return the TimecodeDuration
+     * @throws IllegalArgumentException
+     */
+    public static TimecodeDuration valueOf(String timecode, int timecodeBase, StringType stringType) throws IllegalArgumentException
+    {
+        TimecodeDuration tc = new TimecodeDuration();
+        return (TimecodeDuration) tc.parse(timecode, timecodeBase, stringType);
     }
 }
