@@ -1,13 +1,10 @@
 package com.glookast.commons.timecode;
 
 import com.glookast.commons.timecode.AbstractTimecode.StringType;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class TimecodeTest
 {
@@ -122,7 +119,7 @@ public class TimecodeTest
     {
         assertTrue(tc1.getTimecodeBase() == tc2.getTimecodeBase());
         assertTrue(tc1.isDropFrame() == tc2.isDropFrame());
-        assertTrue(tc1.getFrameNumber()== tc2.getFrameNumber());
+        assertTrue(tc1.getFrameNumber() == tc2.getFrameNumber());
         assertTrue(tc1.getHours() == tc2.getHours());
         assertTrue(tc1.getMinutes() == tc2.getMinutes());
         assertTrue(tc1.getSeconds() == tc2.getSeconds());
@@ -140,23 +137,68 @@ public class TimecodeTest
         int numerator, denominator;
 
         switch (timecodeBase) {
-            case 24: numerator = 24000; denominator = 1001; break;
-            case 25: numerator = 25; denominator = 1; break;
-            case 30: numerator = 30000; denominator = 1001; break;
-            case 50: numerator = 50; denominator = 1; break;
-            case 60: numerator = 60000; denominator = 1001; break;
-            default: fail(); return;
+            case 0:
+                return;
+            case 24:
+                numerator = 24000;
+                denominator = 1001;
+                break;
+            case 25:
+                numerator = 25;
+                denominator = 1;
+                break;
+            case 30:
+                numerator = 30000;
+                denominator = 1001;
+                break;
+            case 48:
+                numerator = 48000;
+                denominator = 1001;
+                break;
+            case 50:
+                numerator = 50;
+                denominator = 1;
+                break;
+            case 60:
+                numerator = 60000;
+                denominator = 1001;
+                break;
+            default:
+                fail();
+                return;
         }
 
-        String oldStorageFormat = tc1.toString().replace(';', ':') + ";" + numerator + ";" + denominator + ";" + dropFrame;
+        String oldStorageFormat = tc1.toString(StringType.Normal).replace(';', ':') + ";" + numerator + ";" + denominator + ";" + dropFrame;
         Timecode tc2 = Timecode.valueOf(oldStorageFormat);
         testTimecodeEquality(tc1, tc2);
     }
 
     private void testParsingFormat(Timecode tc1, int timecodeBase)
     {
-        Timecode tc2 = Timecode.valueOf(tc1.toString(), timecodeBase);
+        String tc2Str = tc1.toString();
+        Timecode tc2 = Timecode.valueOf(tc2Str, timecodeBase);
         testTimecodeEquality(tc1, tc2);
+
+        String tc3Str = tc1.toString(StringType.Normal);
+        Timecode tc3 = Timecode.valueOf(tc3Str, timecodeBase, StringType.Normal);
+        testTimecodeEquality(tc1, tc3);
+
+        String tc4Str = tc1.toString(StringType.Milliseconds);
+        Timecode tc4 = Timecode.valueOf(tc4Str, timecodeBase, StringType.Milliseconds);
+        tc4.setDropFrame(tc1.isDropFrame());
+        testTimecodeEquality(tc1, tc4);
+
+        String tc5Str = tc1.toString(StringType.SMPTE_HIGH_FRAME_RATE);
+        Timecode tc5 = Timecode.valueOf(tc5Str, timecodeBase, StringType.SMPTE_HIGH_FRAME_RATE);
+        testTimecodeEquality(tc1, tc5);
+
+        String tc6Str = tc1.toString(StringType.SMPTE_ST_12M_BINARY_CODED_DECIMALS);
+        Timecode tc6 = Timecode.valueOf(tc6Str, timecodeBase, StringType.SMPTE_ST_12M_BINARY_CODED_DECIMALS);
+        testTimecodeEquality(tc1, tc6);
+
+        String tc7Str = tc1.toString(StringType.SMPTE_ST_258);
+        Timecode tc7 = Timecode.valueOf(tc7Str, timecodeBase, StringType.SMPTE_ST_258);
+        testTimecodeEquality(tc1, tc7);
     }
 
     /**
@@ -187,23 +229,32 @@ public class TimecodeTest
         System.out.println("Timecode base " + timecodeBase + ((dropFrame) ? " Drop Frame" : " Non Drop Frame"));
 
         Timecode prev = new Timecode(timecodeBase, 0, dropFrame);
-
         assertTrue(prev.getFrameNumber() == 0);
+
         testIllegalTimecode(prev, timecodeBase, dropFrame);
+        testStorageFormat(prev);
+        testOldStorageFormat(prev, timecodeBase, dropFrame);
+        testParsingFormat(prev, timecodeBase);
 
         for (long frameNumber = 1; frameNumber <= totalNumberFramesInADay; frameNumber++) {
             Timecode tc = new Timecode(timecodeBase, frameNumber, dropFrame);
 
             testIllegalTimecode(tc, timecodeBase, dropFrame);
-            //testStorageFormat(tc);
-            //testOldStorageFormat(tc, timecodeBase, dropFrame);
-            //testParsingFormat(tc, timecodeBase);
+            testStorageFormat(tc);
+            testOldStorageFormat(tc, timecodeBase, dropFrame);
+            testParsingFormat(tc, timecodeBase);
             testConsecutiveTimecode(prev, tc);
 
             prev = tc;
         }
 
         assertTrue(prev.getFrameNumber() == 0);
+    }
+
+    @Test
+    public void testInvalidTimecode()
+    {
+        testTimecode(0, false);
     }
 
     @Test
@@ -237,6 +288,12 @@ public class TimecodeTest
     }
 
     @Test
+    public void testTimecodeBase48NDF()
+    {
+        testTimecode(48, false);
+    }
+
+    @Test
     public void testTimecodeBase50NDF()
     {
         testTimecode(50, false);
@@ -251,10 +308,15 @@ public class TimecodeTest
     @Test
     public void testInPointOutPointDuration()
     {
-        Timecode inPoint = new Timecode(30, 5, 0, 0, 0, true);
-        Timecode outPoint = new Timecode(30, 10, 59, 59, 29, true);
+        Timecode inPoint = new Timecode(30, 10, 0, 0, 0, true);
+        Timecode outPoint = new Timecode(30, 5, 0, 0, 0, true);
 
         TimecodeDuration duration = Timecode.calculateDuration(inPoint, outPoint);
+
+        assertTrue(duration.hours == 19);
+        assertTrue(duration.minutes == 0);
+        assertTrue(duration.seconds == 0);
+        assertTrue(duration.frames == 0);
 
         Timecode inPoint2 = Timecode.calculateInPoint(outPoint, duration);
         Timecode outPoint2 = Timecode.calculateOutPoint(inPoint, duration);
@@ -262,4 +324,35 @@ public class TimecodeTest
         testTimecodeEquality(inPoint, inPoint2);
         testTimecodeEquality(outPoint, outPoint2);
     }
+
+    @Test
+    public void testTimecodeConversion()
+    {
+        Timecode tc1 = new Timecode(30, 0, 1, 0, 0, false);
+        tc1.setDropFrame(true);
+        assertTrue(tc1.hours == 0);
+        assertTrue(tc1.minutes == 1);
+        assertTrue(tc1.seconds == 0);
+        assertTrue(tc1.frames == 2);
+
+        Timecode tc2 = new Timecode(30, 10, 1, 5, 29, true);
+        Timecode tc3 = new Timecode(tc2);
+
+        tc2.setTimecodeBase(25);
+        assertTrue(tc2.hours == 10);
+        assertTrue(tc2.minutes == 1);
+        assertTrue(tc2.seconds == 5);
+        assertTrue(tc2.frames == 24);
+
+        tc2.setTimecodeBase(30);
+        tc2.setDropFrame(true);
+
+        assertTrue(tc2.hours == 10);
+        assertTrue(tc2.minutes == 1);
+        assertTrue(tc2.seconds == 5);
+        assertTrue(tc2.frames == 29);
+
+        testTimecodeEquality(tc2, tc3);
+    }
+
 }
