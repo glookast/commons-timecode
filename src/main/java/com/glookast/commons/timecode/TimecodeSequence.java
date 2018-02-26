@@ -8,12 +8,12 @@ import java.util.Objects;
 
 
 /**
- * <p>Java class for TimecodePoint complex type.
+ * <p>Java class for TimecodeSequence complex type.
  *
  * <p>The following schema fragment specifies the expected content contained within this class.
  *
  * <pre>
- * &lt;complexType name="TimecodePoint"&gt;
+ * &lt;complexType name="TimecodeSequence"&gt;
  *   &lt;complexContent&gt;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
@@ -27,12 +27,12 @@ import java.util.Objects;
  * </pre>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "TimecodePoint", namespace = "http://timecode.commons.glookast.com", propOrder = {
+@XmlType(name = "TimecodeSequence", namespace = "http://timecode.commons.glookast.com", propOrder = {
     "timecodeSource",
     "timecode",
     "position"
 })
-public class TimecodePoint implements Serializable
+public class TimecodeSequence implements Serializable
 {
 
     @XmlElement(required = true)
@@ -46,7 +46,7 @@ public class TimecodePoint implements Serializable
     /**
      * Default no-arg constructor
      */
-    public TimecodePoint()
+    public TimecodeSequence()
     {
         super();
     }
@@ -54,7 +54,7 @@ public class TimecodePoint implements Serializable
     /**
      * Fully-initialising value constructor
      */
-    public TimecodePoint(final TimecodeSource timecodeSource, final Timecode timecode, final long position)
+    public TimecodeSequence(final TimecodeSource timecodeSource, final Timecode timecode, final long position)
     {
         this.timecodeSource = timecodeSource;
         this.timecode = timecode;
@@ -124,7 +124,7 @@ public class TimecodePoint implements Serializable
     @Override
     public String toString()
     {
-        return "TimecodePoint{" +
+        return "TimecodeSequence{" +
                "timecodeSource=" + timecodeSource +
                ", timecode=" + timecode +
                ", position=" + position +
@@ -140,7 +140,7 @@ public class TimecodePoint implements Serializable
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        TimecodePoint that = (TimecodePoint) o;
+        TimecodeSequence that = (TimecodeSequence) o;
         return position == that.position &&
                timecodeSource == that.timecodeSource &&
                Objects.equals(timecode, that.timecode);
