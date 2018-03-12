@@ -72,6 +72,16 @@ public abstract class AbstractTimecode implements Serializable
     }
 
     /**
+     * Returns whether this timecode represents a valid / initialized.
+     *
+     * @return isValid
+     */
+    public final boolean isValid()
+    {
+        return timecodeBase != 0;
+    }
+
+    /**
      * Returns whether this timecode represents a invalid / uninitialized / null timecode
      *
      * @return isInvalid
