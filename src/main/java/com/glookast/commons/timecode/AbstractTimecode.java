@@ -407,7 +407,7 @@ public abstract class AbstractTimecode implements Serializable
 
     protected AbstractTimecode parse(String timecode)
     {
-        if (timecode == null || timecode.contains("null") || timecode.contains("--:--")) {
+        if (timecode == null || timecode.contains("null") || timecode.contains("--:--:--") || timecode.contains("FFFFFFFF") ) {
             return this;
         }
 
@@ -455,7 +455,7 @@ public abstract class AbstractTimecode implements Serializable
 
     protected AbstractTimecode parse(String timecode, int timecodeBase, StringType stringType)
     {
-        if (timecodeBase <= 0) {
+        if (timecodeBase <= 0 || timecode == null || timecode.contains("null") || timecode.contains("--:--:--") || timecode.contains("FFFFFFFF") ) {
             return this;
         }
 
