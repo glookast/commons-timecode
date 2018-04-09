@@ -61,6 +61,13 @@ public class TimecodeSequence implements Serializable
         this.position = position;
     }
 
+    public TimecodeSequence(final TimecodeSequence timecodeSequence)
+    {
+        this.timecodeSource = timecodeSequence.timecodeSource;
+        this.timecode = new Timecode(timecodeSequence.timecode);
+        this.position = timecodeSequence.position;
+    }
+
     /**
      * Gets the value of the timecodeSource property.
      *
@@ -126,7 +133,7 @@ public class TimecodeSequence implements Serializable
     {
         return "TimecodeSequence{" +
                "timecodeSource=" + timecodeSource +
-               ", timecode=" + timecode +
+               ", timecode=" + AbstractTimecode.toString(timecode, AbstractTimecode.StringType.Storage) +
                ", position=" + position +
                '}';
     }
