@@ -35,7 +35,6 @@ public abstract class AbstractTimecode implements Serializable
         if (timecodeBase < 0) {
             timecodeBase = 0;
         }
-        }
 
         this.timecodeBase = timecodeBase;
 
@@ -452,11 +451,6 @@ public abstract class AbstractTimecode implements Serializable
                         throw new IllegalArgumentException(timecode + " is not a parsable timecode");
                     }
                 }
-
-                int numerator = Integer.valueOf(parts[1]);
-                int denominator = Integer.valueOf(parts[2]);
-                dropFrame = Boolean.valueOf(parts[3]);
-                timecodeBase = (numerator + (denominator / 2)) / denominator;
             }
 
             parts = hmsf.split("[:;.,]");
@@ -495,7 +489,7 @@ public abstract class AbstractTimecode implements Serializable
                 case Storage:
                     parts = timecode.split("/");
                     if (parts.length != 2) {
-                        throw new IllegalArgumentException(timecode + " is not a a valid format for string type '" + stringType + "'");
+                        throw new IllegalArgumentException(timecode + " is not a valid format for string type '" + stringType + "'");
                     }
                     temp = parts[0];
                 case Normal:
@@ -503,7 +497,7 @@ public abstract class AbstractTimecode implements Serializable
                 case Milliseconds:
                     parts = temp.split("[:;.]");
                     if (parts.length != 4) {
-                        throw new IllegalArgumentException(timecode + " is not a a valid format for string type '" + stringType + "'");
+                        throw new IllegalArgumentException(timecode + " is not a valid format for string type '" + stringType + "'");
                     }
                     hours = Integer.valueOf(parts[0]);
                     minutes = Integer.valueOf(parts[1]);
@@ -547,7 +541,7 @@ public abstract class AbstractTimecode implements Serializable
                 case SMPTE_ST_258:
                     parts = timecode.split("[:;.,]");
                     if (parts.length != 4) {
-                        throw new IllegalArgumentException(timecode + " is not a a valid format for string type '" + stringType + "'");
+                        throw new IllegalArgumentException(timecode + " is not a valid format for string type '" + stringType + "'");
                     }
 
                     hours = Integer.valueOf(parts[0]);
@@ -569,7 +563,7 @@ public abstract class AbstractTimecode implements Serializable
                 case SMPTE_HIGH_FRAME_RATE:
                     parts = timecode.split("[:;.]");
                     if (parts.length != 4 && parts.length != 5) {
-                        throw new IllegalArgumentException(timecode + " is not a a valid format for string type '" + stringType + "'");
+                        throw new IllegalArgumentException(timecode + " is not a valid format for string type '" + stringType + "'");
                     }
 
                     hours = Integer.valueOf(parts[0]);
@@ -592,7 +586,7 @@ public abstract class AbstractTimecode implements Serializable
                     throw new UnsupportedOperationException("Timecode.valueOf() with StringType '" + stringType + "' not implemented");
             }
         } catch (NumberFormatException ex) {
-            throw new IllegalArgumentException(timecode + " is not a a valid format for string type '" + stringType + "'");
+            throw new IllegalArgumentException(timecode + " is not a valid format for string type '" + stringType + "'");
         }
 
         return init(timecodeBase, hours, minutes, seconds, frames, dropFrame);
@@ -600,8 +594,8 @@ public abstract class AbstractTimecode implements Serializable
 
     private AbstractTimecode init(int timecodeBase, int hours, int minutes, int seconds, int frames, boolean dropFrame)
     {
-        if (timecodeBase < 1) {
-            timecodeBase = 1;
+        if (timecodeBase < 0) {
+            timecodeBase = 0;
         }
 
         this.timecodeBase = timecodeBase;

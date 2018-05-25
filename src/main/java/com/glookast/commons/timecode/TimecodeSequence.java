@@ -1,6 +1,8 @@
 
 package com.glookast.commons.timecode;
 
+import com.glookast.commons.timecode.xml.XmlAdapterTimecode;
+
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
