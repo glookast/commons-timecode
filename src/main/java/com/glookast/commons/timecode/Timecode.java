@@ -55,7 +55,7 @@ public class Timecode extends AbstractTimecode implements Serializable
     @Override
     protected long truncateFrameNumber(long value)
     {
-        long mod = 24 * 6 * myFramesPerTenMinutes;
+        long mod = 24 * 6 * framesPerTenMinutes;
         return ((value % mod) + mod) % mod;
     }
 
@@ -72,7 +72,7 @@ public class Timecode extends AbstractTimecode implements Serializable
     }
 
     /**
-     * Returns a Timecode instance for given Timecode storage string. Will return null in case the storage string represents a null Timecode
+     * Returns a Timecode instance for given Timecode storage string. Will return an invalid timecode in case the storage string represents an invalid Timecode
      *
      * @param timecode
      * @return the timecode
@@ -81,13 +81,12 @@ public class Timecode extends AbstractTimecode implements Serializable
     public static Timecode valueOf(String timecode) throws IllegalArgumentException
     {
         Timecode tc = new Timecode();
-        return (Timecode)tc.parse(timecode);
+        return (Timecode) tc.parse(timecode);
     }
 
     /**
      * Returns a Timecode instance for given timecode string and timecode base. Acceptable inputs are
-     * the normal representation xx:xx:xx:xx for non drop frame and xx:xx:xx;xx for drop frame
-     * and SMPTE331M representation which uses binary coded decimals
+     * the normal representation HH:MM:SS:FF for non drop frame and HH:MM:SS:FF for drop frame
      *
      * @param timecode
      * @param timecodeBase
@@ -96,7 +95,22 @@ public class Timecode extends AbstractTimecode implements Serializable
      */
     public static Timecode valueOf(String timecode, int timecodeBase) throws IllegalArgumentException
     {
+        return valueOf(timecode, timecodeBase, StringType.Normal);
+    }
+
+    /**
+     * Returns a Timecode instance for given timecode string and timecode base.
+     * What is considered acceptable input varies per selected StringType
+     *
+     * @param timecode
+     * @param timecodeBase
+     * @param stringType
+     * @return the timecode
+     * @throws IllegalArgumentException
+     */
+    public static Timecode valueOf(String timecode, int timecodeBase, StringType stringType) throws IllegalArgumentException
+    {
         Timecode tc = new Timecode();
-        return (Timecode)tc.parse(timecode, timecodeBase);
+        return (Timecode) tc.parse(timecode, timecodeBase, stringType);
     }
 }
