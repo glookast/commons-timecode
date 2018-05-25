@@ -1,7 +1,14 @@
 package com.glookast.commons.timecode;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.glookast.commons.timecode.json.TimecodeDurationDeserializer;
+import com.glookast.commons.timecode.json.TimecodeDurationSerializer;
+
 import java.io.Serializable;
 
+@JsonSerialize(using = TimecodeDurationSerializer.class)
+@JsonDeserialize(using = TimecodeDurationDeserializer.class)
 public class TimecodeDuration extends AbstractTimecode implements Serializable
 {
     private static final long serialVersionUID = 1L;

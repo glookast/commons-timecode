@@ -35,6 +35,7 @@ public abstract class AbstractTimecode implements Serializable
         if (timecodeBase < 0) {
             timecodeBase = 0;
         }
+        }
 
         this.timecodeBase = timecodeBase;
 
@@ -107,8 +108,8 @@ public abstract class AbstractTimecode implements Serializable
             timecodeBase = 0;
         }
 
-        if (this.timecodeBase > 0) {
-            this.frames = Math.round(1.0f * this.frames * timecodeBase / this.timecodeBase);
+        if (this.timecodeBase > 0 && timecodeBase != this.timecodeBase) {
+            this.frames = (int)Math.round((double)this.frames * timecodeBase / this.timecodeBase);
         }
         this.timecodeBase = timecodeBase;
 
@@ -412,6 +413,7 @@ public abstract class AbstractTimecode implements Serializable
         }
 
         try {
+            String hmsf;
             int timecodeBase;
             int hours;
             int minutes;
@@ -422,13 +424,33 @@ public abstract class AbstractTimecode implements Serializable
             String[] parts = timecode.split("/");
 
             if (parts.length == 2) {
-                dropFrame = parts[0].contains(";");
+                hmsf = parts[0];
+                dropFrame = hmsf.contains(";");
                 timecodeBase = Integer.valueOf(parts[1]);
             } else {
                 // supporting the old timecode storage format
                 parts = timecode.split(";");
-                if (parts.length != 4) {
-                    throw new IllegalArgumentException(timecode + " is not a valid storage format for a timecode");
+
+                if (parts.length == 4) {
+                    hmsf =  parts[0];
+                    int numerator = Integer.valueOf(parts[1]);
+                    int denominator = Integer.valueOf(parts[2]);
+                    dropFrame = Boolean.valueOf(parts[3]);
+                    timecodeBase = (numerator + (denominator / 2)) / denominator;
+                } else {
+                    // if not old format then just parse it regularly and assume timecode base of 30 / 60 / 120 / etc;
+                    parts = timecode.split("[:;.,]");
+                    if (parts.length == 4) {
+                        hmsf = timecode;
+                        dropFrame = hmsf.contains(";");
+                        frames = Integer.valueOf(parts[3]);
+                        timecodeBase = 30;
+                        while (timecodeBase < frames) {
+                            timecodeBase *= 2;
+                        }
+                    } else {
+                        throw new IllegalArgumentException(timecode + " is not a parsable timecode");
+                    }
                 }
 
                 int numerator = Integer.valueOf(parts[1]);
@@ -437,9 +459,9 @@ public abstract class AbstractTimecode implements Serializable
                 timecodeBase = (numerator + (denominator / 2)) / denominator;
             }
 
-            parts = parts[0].split("[:;]");
+            parts = hmsf.split("[:;.,]");
             if (parts.length != 4) {
-                throw new IllegalArgumentException(timecode + " is not a valid storage format for a timecode");
+                throw new IllegalArgumentException(timecode + " is not a parsable timecode");
             }
 
             hours = Integer.valueOf(parts[0]);
@@ -447,9 +469,9 @@ public abstract class AbstractTimecode implements Serializable
             seconds = Integer.valueOf(parts[2]);
             frames = Integer.valueOf(parts[3]);
 
-            return parse(timecode, timecodeBase, hours, minutes, seconds, frames, dropFrame);
+            return init(timecodeBase, hours, minutes, seconds, frames, dropFrame);
         } catch (NumberFormatException ex) {
-            throw new IllegalArgumentException(timecode + " is not a valid storage format for a timecode");
+            throw new IllegalArgumentException(timecode + " is not a parsable timecode");
         }
     }
 
@@ -573,22 +595,13 @@ public abstract class AbstractTimecode implements Serializable
             throw new IllegalArgumentException(timecode + " is not a a valid format for string type '" + stringType + "'");
         }
 
-        return parse(timecode, timecodeBase, hours, minutes, seconds, frames, dropFrame);
+        return init(timecodeBase, hours, minutes, seconds, frames, dropFrame);
     }
 
-    private AbstractTimecode parse(String timecode, int timecodeBase, int hours, int minutes, int seconds, int frames, boolean dropFrame)
+    private AbstractTimecode init(int timecodeBase, int hours, int minutes, int seconds, int frames, boolean dropFrame)
     {
-        if (hours < 0) {
-            throw new IllegalArgumentException(timecode + " is not a valid timecode");
-        }
-        if (minutes < 0 || minutes >= 60) {
-            throw new IllegalArgumentException(timecode + " is not a valid timecode");
-        }
-        if (seconds < 0 || seconds >= 60) {
-            throw new IllegalArgumentException(timecode + " is not a valid timecode");
-        }
-        if (frames < 0 || frames >= timecodeBase) {
-            throw new IllegalArgumentException(timecode + " is not a valid timecode for timecode base " + timecodeBase + (dropFrame ? " DF" : " NDF"));
+        if (timecodeBase < 1) {
+            timecodeBase = 1;
         }
 
         this.timecodeBase = timecodeBase;
@@ -597,7 +610,7 @@ public abstract class AbstractTimecode implements Serializable
         this.seconds = seconds;
         this.frames = frames;
 
-        setDropFrame(dropFrame);
+        this.setDropFrame(dropFrame);
 
         return this;
     }

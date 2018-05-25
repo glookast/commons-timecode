@@ -1,4 +1,7 @@
-package com.glookast.commons.timecode;
+package com.glookast.commons.timecode.xml;
+
+import com.glookast.commons.timecode.AbstractTimecode;
+import com.glookast.commons.timecode.TimecodeDuration;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
