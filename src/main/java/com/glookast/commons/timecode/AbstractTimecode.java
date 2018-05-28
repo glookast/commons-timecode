@@ -639,6 +639,15 @@ public abstract class AbstractTimecode implements Serializable
         return 0;
     }
 
+    /**
+     * Calculates duration between given inPoint and outPoint.
+     * In case outPoint does not have the same Timecode base and/or dropFrame flag
+     * it will convert it to the same Timecode base and dropFrame flag of the inPoint
+     *
+     * @param inPoint
+     * @param outPoint
+     * @return duration
+     */
     public static TimecodeDuration calculateDuration(Timecode inPoint, Timecode outPoint)
     {
         if (!inPoint.isCompatible(outPoint)) {
@@ -655,6 +664,15 @@ public abstract class AbstractTimecode implements Serializable
         return new TimecodeDuration(inPoint.getTimecodeBase(), frameNumber, inPoint.isDropFrame());
     }
 
+    /**
+     * Calculates inPoint of a given outPoint and duration.
+     * In case duration does not have the same Timecode base and/or dropFrame flag
+     * it will convert it to the same Timecode base and dropFrame flag of the outPoint
+     *
+     * @param outPoint
+     * @param duration
+     * @return inPoint
+     */
     public static Timecode calculateInPoint(Timecode outPoint, TimecodeDuration duration)
     {
         if (!outPoint.isCompatible(duration)) {
@@ -668,6 +686,15 @@ public abstract class AbstractTimecode implements Serializable
         return inPoint;
     }
 
+    /**
+     * Calculates outPoint of a given inPoint and duration.
+     * In case duration does not have the same Timecode base and/or dropFrame flag
+     * it will convert it to the same Timecode base and dropFrame flag of the inPoint
+     *
+     * @param inPoint
+     * @param duration
+     * @return outPoint
+     */
     public static Timecode calculateOutPoint(Timecode inPoint, TimecodeDuration duration)
     {
         if (!inPoint.isCompatible(duration)) {
