@@ -664,11 +664,23 @@ public abstract class AbstractTimecode implements Serializable
         return 0;
     }
 
+    /**
+     * Calculates duration between given inPoint and outPoint.
+     * In case outPoint does not have the same Timecode base and/or dropFrame flag
+     * it will convert it to the same Timecode base and dropFrame flag of the inPoint
+     *
+     * @param inPoint
+     * @param outPoint
+     * @return duration
+     */
     public static TimecodeDuration calculateDuration(Timecode inPoint, Timecode outPoint)
     {
-        if (inPoint.getTimecodeBase() != outPoint.getTimecodeBase() || inPoint.isDropFrame() != outPoint.isDropFrame()) {
-            throw new IllegalArgumentException("Not possible to calculate TimecodeDuration between inPoint '" + toString(inPoint, StringType.Storage) + "' and outPoint '" + toString(outPoint, StringType.Storage) + "'");
+        if (!inPoint.isCompatible(outPoint)) {
+            outPoint = new Timecode(outPoint);
+            outPoint.setTimecodeBase(inPoint.getTimecodeBase());
+            outPoint.setDropFrame(inPoint.isDropFrame());
         }
+
         long frameNumber = outPoint.getFrameNumber() - inPoint.getFrameNumber();
         if (frameNumber < 0) {
             frameNumber += (24 * 6 * inPoint.framesPerTenMinutes);
@@ -677,23 +689,57 @@ public abstract class AbstractTimecode implements Serializable
         return new TimecodeDuration(inPoint.getTimecodeBase(), frameNumber, inPoint.isDropFrame());
     }
 
+    /**
+     * Calculates inPoint of a given outPoint and duration.
+     * In case duration does not have the same Timecode base and/or dropFrame flag
+     * it will convert it to the same Timecode base and dropFrame flag of the outPoint
+     *
+     * @param outPoint
+     * @param duration
+     * @return inPoint
+     */
     public static Timecode calculateInPoint(Timecode outPoint, TimecodeDuration duration)
     {
-        if (outPoint.getTimecodeBase() != duration.getTimecodeBase() || outPoint.isDropFrame() != duration.isDropFrame()) {
-            throw new IllegalArgumentException("Not possible to calculate Timecode inPoint using outPoint '" + toString(outPoint, StringType.Storage) + "' and duration '" + toString(duration, StringType.Storage) + "'");
+        if (!outPoint.isCompatible(duration)) {
+            duration = new TimecodeDuration(duration);
+            duration.setTimecodeBase(outPoint.getTimecodeBase());
+            duration.setDropFrame(outPoint.isDropFrame());
         }
+
         Timecode inPoint = new Timecode(outPoint);
         inPoint.addFrames(-duration.getFrameNumber());
         return inPoint;
     }
 
+    /**
+     * Calculates outPoint of a given inPoint and duration.
+     * In case duration does not have the same Timecode base and/or dropFrame flag
+     * it will convert it to the same Timecode base and dropFrame flag of the inPoint
+     *
+     * @param inPoint
+     * @param duration
+     * @return outPoint
+     */
     public static Timecode calculateOutPoint(Timecode inPoint, TimecodeDuration duration)
     {
-        if (inPoint.getTimecodeBase() != duration.getTimecodeBase() || inPoint.isDropFrame() != duration.isDropFrame()) {
-            throw new IllegalArgumentException("Not possible to calculate Timecode outPoint using inPoint '" + toString(inPoint, StringType.Storage) + "' and duration '" + toString(duration, StringType.Storage) + "'");
+        if (!inPoint.isCompatible(duration)) {
+            duration = new TimecodeDuration(duration);
+            duration.setTimecodeBase(inPoint.getTimecodeBase());
+            duration.setDropFrame(inPoint.isDropFrame());
         }
+
         Timecode outPoint = new Timecode(inPoint);
         outPoint.addFrames(duration.getFrameNumber());
         return outPoint;
+    }
+
+    public boolean isCompatible(AbstractTimecode other)
+    {
+        return isCompatible(this, other);
+    }
+
+    public static boolean isCompatible(AbstractTimecode t1, AbstractTimecode t2)
+    {
+        return t1 != null && t2 != null && t1.getTimecodeBase() == t2.getTimecodeBase() && t1.isDropFrame() == t2.isDropFrame();
     }
 }
