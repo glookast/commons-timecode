@@ -740,6 +740,11 @@ public abstract class AbstractTimecode implements Serializable
 
     public static boolean isCompatible(AbstractTimecode t1, AbstractTimecode t2)
     {
-        return t1 != null && t2 != null && t1.getTimecodeBase() == t2.getTimecodeBase() && t1.isDropFrame() == t2.isDropFrame();
+        return t1 != null &&
+               t2 != null &&
+               t1.isValid() &&
+               t2.isValid() &&
+               t1.getTimecodeBase() == t2.getTimecodeBase() &&
+               t1.isDropFrame() == t2.isDropFrame();
     }
 }
