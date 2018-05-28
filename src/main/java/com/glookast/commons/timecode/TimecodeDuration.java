@@ -15,6 +15,7 @@ public class TimecodeDuration extends AbstractTimecode implements Serializable
 
     public TimecodeDuration()
     {
+        super();
     }
 
     public TimecodeDuration(int timecodeBase)

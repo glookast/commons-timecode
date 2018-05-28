@@ -108,7 +108,7 @@ public abstract class AbstractTimecode implements Serializable
         }
 
         if (this.timecodeBase > 0 && timecodeBase != this.timecodeBase) {
-            this.frames = (int)Math.round((double)this.frames * timecodeBase / this.timecodeBase);
+            this.frames = (int) Math.round((double) this.frames * timecodeBase / this.timecodeBase);
         }
         this.timecodeBase = timecodeBase;
 
@@ -122,7 +122,7 @@ public abstract class AbstractTimecode implements Serializable
 
     public void setDropFrame(boolean dropFrame)
     {
-        if (timecodeBase / 30 * 30 != timecodeBase) {
+        if (timecodeBase == 0 || timecodeBase / 30 * 30 != timecodeBase) {
             dropFrame = false;
         }
 
@@ -407,7 +407,7 @@ public abstract class AbstractTimecode implements Serializable
 
     protected AbstractTimecode parse(String timecode)
     {
-        if (timecode == null || timecode.contains("null") || timecode.contains("--:--:--") || timecode.contains("FFFFFFFF") ) {
+        if (timecode == null || timecode.contains("null") || timecode.contains("--:--:--") || timecode.contains("FFFFFFFF")) {
             return this;
         }
 
@@ -431,7 +431,7 @@ public abstract class AbstractTimecode implements Serializable
                 parts = timecode.split(";");
 
                 if (parts.length == 4) {
-                    hmsf =  parts[0];
+                    hmsf = parts[0];
                     int numerator = Integer.valueOf(parts[1]);
                     int denominator = Integer.valueOf(parts[2]);
                     dropFrame = Boolean.valueOf(parts[3]);
@@ -471,7 +471,7 @@ public abstract class AbstractTimecode implements Serializable
 
     protected AbstractTimecode parse(String timecode, int timecodeBase, StringType stringType)
     {
-        if (timecodeBase <= 0 || timecode == null || timecode.contains("null") || timecode.contains("--:--:--") || timecode.contains("FFFFFFFF") ) {
+        if (timecodeBase <= 0 || timecode == null || timecode.contains("null") || timecode.contains("--:--:--") || timecode.contains("FFFFFFFF")) {
             return this;
         }
 

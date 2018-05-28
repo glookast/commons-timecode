@@ -1,6 +1,6 @@
-
 package com.glookast.commons.timecode;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.glookast.commons.timecode.xml.XmlAdapterTimecode;
 
 import javax.xml.bind.annotation.*;
@@ -34,6 +34,7 @@ import java.util.Objects;
     "timecode",
     "position"
 })
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, defaultImpl = TimecodeSequence.class)
 public class TimecodeSequence implements Serializable
 {
 

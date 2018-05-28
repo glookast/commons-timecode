@@ -15,6 +15,7 @@ public class Timecode extends AbstractTimecode implements Serializable
 
     public Timecode()
     {
+        super();
     }
 
     public Timecode(int timecodeBase)
@@ -105,7 +106,6 @@ public class Timecode extends AbstractTimecode implements Serializable
      * @param timecode
      * @param timecodeBase
      * @param stringType
-     *
      * @return the timecode
      * @throws IllegalArgumentException
      */

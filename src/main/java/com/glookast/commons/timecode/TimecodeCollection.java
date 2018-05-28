@@ -1,6 +1,6 @@
-
 package com.glookast.commons.timecode;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.glookast.commons.timecode.xml.XmlAdapterTimecode;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -39,6 +39,7 @@ import java.util.Objects;
     "tod",
     "rs422"
 })
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, defaultImpl = TimecodeCollection.class)
 public class TimecodeCollection implements Serializable
 {
 
@@ -60,7 +61,7 @@ public class TimecodeCollection implements Serializable
      */
     public TimecodeCollection()
     {
-        super();
+        this(null, null, null, null);
     }
 
     /**
@@ -68,10 +69,18 @@ public class TimecodeCollection implements Serializable
      */
     public TimecodeCollection(final Timecode ltc, final Timecode vitc, final Timecode tod, final Timecode rs422)
     {
-        this.ltc = ltc;
-        this.vitc = vitc;
-        this.tod = tod;
-        this.rs422 = rs422;
+        this.ltc = ltc == null ? new Timecode() : ltc;
+        this.vitc = vitc == null ? new Timecode() : vitc;
+        this.tod = tod == null ? new Timecode() : tod;
+        this.rs422 = rs422 == null ? new Timecode() : rs422;
+    }
+
+    public TimecodeCollection(TimecodeCollection timecodeCollection)
+    {
+        this.ltc = new Timecode(timecodeCollection.ltc);
+        this.vitc = new Timecode(timecodeCollection.vitc);
+        this.tod = new Timecode(timecodeCollection.tod);
+        this.rs422 = new Timecode(timecodeCollection.rs422);
     }
 
     /**
@@ -93,7 +102,7 @@ public class TimecodeCollection implements Serializable
      */
     public void setLtc(Timecode value)
     {
-        this.ltc = value;
+        this.ltc = value == null ? new Timecode() : value;
     }
 
     /**
@@ -115,7 +124,7 @@ public class TimecodeCollection implements Serializable
      */
     public void setVitc(Timecode value)
     {
-        this.vitc = value;
+        this.vitc = value == null ? new Timecode() : value;
     }
 
     /**
@@ -137,7 +146,7 @@ public class TimecodeCollection implements Serializable
      */
     public void setTod(Timecode value)
     {
-        this.tod = value;
+        this.tod = value == null ? new Timecode() : value;
     }
 
     /**
@@ -159,7 +168,7 @@ public class TimecodeCollection implements Serializable
      */
     public void setRs422(Timecode value)
     {
-        this.rs422 = value;
+        this.rs422 = value == null ? new Timecode() : value;
     }
 
     @Override
@@ -192,7 +201,6 @@ public class TimecodeCollection implements Serializable
     @Override
     public int hashCode()
     {
-
         return Objects.hash(ltc, vitc, tod, rs422);
     }
 }
