@@ -1,13 +1,21 @@
 package com.glookast.commons.timecode;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.glookast.commons.timecode.json.TimecodeDeserializer;
+import com.glookast.commons.timecode.json.TimecodeSerializer;
+
 import java.io.Serializable;
 
+@JsonSerialize(using = TimecodeSerializer.class)
+@JsonDeserialize(using = TimecodeDeserializer.class)
 public class Timecode extends AbstractTimecode implements Serializable
 {
     private static final long serialVersionUID = 1L;
 
     public Timecode()
     {
+        super();
     }
 
     public Timecode(int timecodeBase)
@@ -98,7 +106,6 @@ public class Timecode extends AbstractTimecode implements Serializable
      * @param timecode
      * @param timecodeBase
      * @param stringType
-     *
      * @return the timecode
      * @throws IllegalArgumentException
      */

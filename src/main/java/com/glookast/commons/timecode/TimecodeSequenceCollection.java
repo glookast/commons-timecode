@@ -1,4 +1,3 @@
-
 package com.glookast.commons.timecode;
 
 import java.io.Serializable;
