@@ -1,4 +1,8 @@
+
 package com.glookast.commons.timecode;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
@@ -13,10 +17,10 @@ import javax.xml.bind.annotation.XmlType;
  * <pre>
  * &lt;simpleType name="TimecodeSource"&gt;
  *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string"&gt;
- *     &lt;enumeration value="ltc"/&gt;
- *     &lt;enumeration value="vitc"/&gt;
- *     &lt;enumeration value="tod"/&gt;
- *     &lt;enumeration value="rs422"/&gt;
+ *     &lt;enumeration value="LTC"/&gt;
+ *     &lt;enumeration value="VITC"/&gt;
+ *     &lt;enumeration value="TOD"/&gt;
+ *     &lt;enumeration value="RS422"/&gt;
  *   &lt;/restriction&gt;
  * &lt;/simpleType&gt;
  * </pre>
@@ -26,14 +30,11 @@ import javax.xml.bind.annotation.XmlType;
 public enum TimecodeSource
 {
 
-    @XmlEnumValue("LTC")
     LTC("LTC"),
-    @XmlEnumValue("VITC")
     VITC("VITC"),
-    @XmlEnumValue("TOD")
     TOD("TOD"),
     @XmlEnumValue("RS422")
-    RS422("RS422");
+    RS_422("RS422");
     private final String value;
 
     TimecodeSource(String v)
@@ -41,11 +42,13 @@ public enum TimecodeSource
         value = v;
     }
 
+    @JsonValue()
     public String value()
     {
         return value;
     }
 
+    @JsonCreator
     public static TimecodeSource fromValue(String v)
     {
         for (TimecodeSource c : TimecodeSource.values()) {
