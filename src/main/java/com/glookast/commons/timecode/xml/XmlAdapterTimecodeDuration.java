@@ -21,7 +21,7 @@ public class XmlAdapterTimecodeDuration extends XmlAdapter<String, TimecodeDurat
     @Override
     public String marshal(TimecodeDuration value) throws Exception
     {
-        return (AbstractTimecode.toString(value, AbstractTimecode.StringType.Storage));
+        return (AbstractTimecode.toString(value, AbstractTimecode.StringType.STORAGE));
     }
 
 }

@@ -128,7 +128,7 @@ public class TimecodeTest
 
     private void testStorageFormat(Timecode tc1)
     {
-        Timecode tc2 = Timecode.valueOf(tc1.toString(StringType.Storage));
+        Timecode tc2 = Timecode.valueOf(tc1.toString(StringType.STORAGE));
         testTimecodeEquality(tc1, tc2);
     }
 
@@ -168,7 +168,7 @@ public class TimecodeTest
                 return;
         }
 
-        String oldStorageFormat = tc1.toString(StringType.Normal).replace(';', ':') + ";" + numerator + ";" + denominator + ";" + dropFrame;
+        String oldStorageFormat = tc1.toString(StringType.NORMAL).replace(';', ':') + ";" + numerator + ";" + denominator + ";" + dropFrame;
         Timecode tc2 = Timecode.valueOf(oldStorageFormat);
         testTimecodeEquality(tc1, tc2);
     }
@@ -179,12 +179,12 @@ public class TimecodeTest
         Timecode tc2 = Timecode.valueOf(tc2Str, timecodeBase);
         testTimecodeEquality(tc1, tc2);
 
-        String tc3Str = tc1.toString(StringType.Normal);
-        Timecode tc3 = Timecode.valueOf(tc3Str, timecodeBase, StringType.Normal);
+        String tc3Str = tc1.toString(StringType.NORMAL);
+        Timecode tc3 = Timecode.valueOf(tc3Str, timecodeBase, StringType.NORMAL);
         testTimecodeEquality(tc1, tc3);
 
-        String tc4Str = tc1.toString(StringType.Milliseconds);
-        Timecode tc4 = Timecode.valueOf(tc4Str, timecodeBase, StringType.Milliseconds);
+        String tc4Str = tc1.toString(StringType.MILLISECONDS);
+        Timecode tc4 = Timecode.valueOf(tc4Str, timecodeBase, StringType.MILLISECONDS);
         tc4.setDropFrame(tc1.isDropFrame());
         testTimecodeEquality(tc1, tc4);
 
