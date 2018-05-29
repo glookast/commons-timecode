@@ -312,10 +312,10 @@ public abstract class AbstractTimecode implements Serializable
 
     public enum StringType
     {
-        Storage,
-        Normal,
-        NoFrames,
-        Milliseconds,
+        STORAGE,
+        NORMAL,
+        NO_FRAMES,
+        MILLISECONDS,
         SMPTE_HIGH_FRAME_RATE,
         SMPTE_ST_12M_BINARY_CODED_DECIMALS,
         SMPTE_ST_258
@@ -324,7 +324,7 @@ public abstract class AbstractTimecode implements Serializable
     @Override
     public String toString()
     {
-        return toString(this, StringType.Normal);
+        return toString(this, StringType.NORMAL);
     }
 
     public String toString(StringType stringType)
@@ -336,12 +336,12 @@ public abstract class AbstractTimecode implements Serializable
     {
         if (timecode == null || timecode.isInvalid()) {
             switch (stringType) {
-                case Storage:
+                case STORAGE:
                     return "null-timecode";
-                case Milliseconds:
+                case MILLISECONDS:
                     return "--:--:--.---";
-                case Normal:
-                case NoFrames:
+                case NORMAL:
+                case NO_FRAMES:
                 case SMPTE_HIGH_FRAME_RATE:
                 case SMPTE_ST_258:
                     return "--:--:--:--";
@@ -359,13 +359,13 @@ public abstract class AbstractTimecode implements Serializable
             }
 
             switch (stringType) {
-                case Storage:
+                case STORAGE:
                     return String.format("%02d:%02d:%02d%c%02d/%d", timecode.hours, timecode.minutes, timecode.seconds, ((timecode.dropFrame) ? ';' : ':'), timecode.frames, timecode.timecodeBase);
-                case Normal:
+                case NORMAL:
                     return String.format("%02d:%02d:%02d%c%02d", timecode.hours, timecode.minutes, timecode.seconds, ((timecode.dropFrame) ? ';' : ':'), timecode.frames);
-                case NoFrames:
+                case NO_FRAMES:
                     return String.format("%02d:%02d:%02d%c--", timecode.hours, timecode.minutes, timecode.seconds, ((timecode.dropFrame) ? ';' : ':'));
-                case Milliseconds:
+                case MILLISECONDS:
                     return String.format("%02d:%02d:%02d.%03d", timecode.hours, timecode.minutes, timecode.seconds, Math.round(timecode.frames * 1000.0 / timecode.timecodeBase));
                 case SMPTE_ST_12M_BINARY_CODED_DECIMALS:
                     long value = 0;
@@ -486,15 +486,15 @@ public abstract class AbstractTimecode implements Serializable
 
         try {
             switch (stringType) {
-                case Storage:
+                case STORAGE:
                     parts = timecode.split("/");
                     if (parts.length != 2) {
                         throw new IllegalArgumentException(timecode + " is not a valid format for string type '" + stringType + "'");
                     }
                     temp = parts[0];
-                case Normal:
-                case NoFrames:
-                case Milliseconds:
+                case NORMAL:
+                case NO_FRAMES:
+                case MILLISECONDS:
                     parts = temp.split("[:;.]");
                     if (parts.length != 4) {
                         throw new IllegalArgumentException(timecode + " is not a valid format for string type '" + stringType + "'");
@@ -503,11 +503,11 @@ public abstract class AbstractTimecode implements Serializable
                     minutes = Integer.valueOf(parts[1]);
                     seconds = Integer.valueOf(parts[2]);
                     switch (stringType) {
-                        case Storage:
-                        case Normal:
+                        case STORAGE:
+                        case NORMAL:
                             frames = Integer.valueOf(parts[3]);
                             break;
-                        case Milliseconds:
+                        case MILLISECONDS:
                             frames = Math.round(Integer.valueOf(parts[3], 10) * timecodeBase / 1000.0f);
                             break;
                         default:

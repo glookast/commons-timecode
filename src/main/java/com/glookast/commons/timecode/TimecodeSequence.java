@@ -136,7 +136,7 @@ public class TimecodeSequence implements Serializable
     {
         return "TimecodeSequence{" +
                "timecodeSource=" + timecodeSource +
-               ", timecode=" + AbstractTimecode.toString(timecode, AbstractTimecode.StringType.Storage) +
+               ", timecode=" + AbstractTimecode.toString(timecode, AbstractTimecode.StringType.STORAGE) +
                ", position=" + position +
                '}';
     }

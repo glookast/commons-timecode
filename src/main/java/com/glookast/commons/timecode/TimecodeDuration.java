@@ -98,7 +98,7 @@ public class TimecodeDuration extends AbstractTimecode implements Serializable
      */
     public static TimecodeDuration valueOf(String timecode, int timecodeBase) throws IllegalArgumentException
     {
-        return valueOf(timecode, timecodeBase, StringType.Normal);
+        return valueOf(timecode, timecodeBase, StringType.NORMAL);
     }
 
     /**

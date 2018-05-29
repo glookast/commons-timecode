@@ -26,14 +26,14 @@ import javax.xml.bind.annotation.XmlType;
 public enum TimecodeSource
 {
 
-    @XmlEnumValue("ltc")
-    LTC("ltc"),
-    @XmlEnumValue("vitc")
-    VITC("vitc"),
-    @XmlEnumValue("tod")
-    TOD("tod"),
-    @XmlEnumValue("rs422")
-    RS_422("rs422");
+    @XmlEnumValue("LTC")
+    LTC("LTC"),
+    @XmlEnumValue("VITC")
+    VITC("VITC"),
+    @XmlEnumValue("TOD")
+    TOD("TOD"),
+    @XmlEnumValue("RS422")
+    RS422("RS422");
     private final String value;
 
     TimecodeSource(String v)

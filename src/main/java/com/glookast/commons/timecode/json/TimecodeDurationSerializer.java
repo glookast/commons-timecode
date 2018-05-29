@@ -18,6 +18,6 @@ public class TimecodeDurationSerializer extends StdSerializer<TimecodeDuration>
     @Override
     public void serialize(TimecodeDuration value, JsonGenerator gen, SerializerProvider provider) throws IOException
     {
-        gen.writeString(value.toString(AbstractTimecode.StringType.Storage));
+        gen.writeString(value.toString(AbstractTimecode.StringType.STORAGE));
     }
 }
