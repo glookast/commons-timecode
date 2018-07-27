@@ -558,21 +558,22 @@ public abstract class AbstractTimecode implements Serializable
             return 0;
         }
 
-        if (t1 == null) {
+        if (Timecode.isInvalid(t1)) {
             return -1;
-        }
-
-        if (t2 == null) {
+        } else if (Timecode.isInvalid(t2)) {
             return 1;
         }
 
-        long diff = t1.frameNumber - t2.frameNumber;
-        if (diff > 0) {
-            return 1;
-        } else if (diff < 0) {
+        int s1 = t1.getHours() * 3600 + t1.getMinutes() * 60 + t1.getSeconds();
+        int s2 = t2.getHours() * 3600 + t2.getMinutes() * 60 + t2.getSeconds();
+
+        if (s1 < s2) {
             return -1;
+        } else if (s1 > s2) {
+            return 1;
         }
-        return 0;
+
+        return t1.getFrames() - t2.getFrames();
     }
 
     /**
