@@ -38,37 +38,37 @@ public abstract class AbstractTimecode implements Serializable
 
         this.timecodeBase = timecodeBase;
 
-        setDropFrame(dropFrame);
+        innerSetDropFrame(dropFrame);
     }
 
     public AbstractTimecode(int timecodeBase, long frameNumber)
     {
         this(timecodeBase, false);
-        setFrameNumber(frameNumber);
+        innerSetFrameNumber(frameNumber);
     }
 
     public AbstractTimecode(int timecodeBase, long frameNumber, boolean dropFrame)
     {
         this(timecodeBase, dropFrame);
-        setFrameNumber(frameNumber);
+        innerSetFrameNumber(frameNumber);
     }
 
     public AbstractTimecode(int timecodeBase, int hours, int minutes, int seconds, int frames)
     {
         this(timecodeBase, false);
-        setHMSF(hours, minutes, seconds, frames);
+        innerSetHMSF(hours, minutes, seconds, frames);
     }
 
     public AbstractTimecode(int timecodeBase, int hours, int minutes, int seconds, int frames, boolean dropFrame)
     {
         this(timecodeBase, dropFrame);
-        setHMSF(hours, minutes, seconds, frames);
+        innerSetHMSF(hours, minutes, seconds, frames);
     }
 
     public AbstractTimecode(AbstractTimecode timecode)
     {
         this(timecode.getTimecodeBase(), timecode.isDropFrame());
-        setFrameNumber(timecode.getFrameNumber());
+        innerSetFrameNumber(timecode.getFrameNumber());
     }
 
     /**
@@ -76,7 +76,7 @@ public abstract class AbstractTimecode implements Serializable
      *
      * @return isValid
      */
-    public final boolean isValid()
+    public boolean isValid()
     {
         return timecodeBase != 0;
     }
@@ -86,41 +86,22 @@ public abstract class AbstractTimecode implements Serializable
      *
      * @return isInvalid
      */
-    public final boolean isInvalid()
+    public boolean isInvalid()
     {
         return timecodeBase == 0;
     }
 
-    public final void setInvalid()
-    {
-        setTimecodeBase(0);
-    }
-
-    public final int getTimecodeBase()
+    public int getTimecodeBase()
     {
         return timecodeBase;
     }
 
-    public void setTimecodeBase(int timecodeBase)
-    {
-        if (timecodeBase < 0) {
-            timecodeBase = 0;
-        }
-
-        if (this.timecodeBase > 0 && timecodeBase != this.timecodeBase) {
-            this.frames = (int) Math.round((double) this.frames * timecodeBase / this.timecodeBase);
-        }
-        this.timecodeBase = timecodeBase;
-
-        setDropFrame(this.dropFrame);
-    }
-
-    public final boolean isDropFrame()
+    public boolean isDropFrame()
     {
         return dropFrame;
     }
 
-    public void setDropFrame(boolean dropFrame)
+    protected void innerSetDropFrame(boolean dropFrame)
     {
         if (timecodeBase == 0 || timecodeBase / 30 * 30 != timecodeBase) {
             dropFrame = false;
@@ -132,7 +113,7 @@ public abstract class AbstractTimecode implements Serializable
         framesPerMinuteDropFrame = framesPerMinute - adjustmentPerMinute;
         framesPerTenMinutes = framesPerMinute + 9 * framesPerMinuteDropFrame;
 
-        this.setHMSF(this.hours, this.minutes, this.seconds, this.frames);
+        this.innerSetHMSF(this.hours, this.minutes, this.seconds, this.frames);
     }
 
     /**
@@ -140,41 +121,28 @@ public abstract class AbstractTimecode implements Serializable
      *
      * @return Frame number
      */
-    public final long getFrameNumber()
+    public long getFrameNumber()
     {
         return frameNumber;
     }
 
-    /**
-     * Sets the timecode to the current frame number
-     *
-     * @param frameNumber Frame number
-     */
-    public final void setFrameNumber(long frameNumber)
+    protected void innerSetFrameNumber(long frameNumber)
     {
         this.frameNumber = frameNumber;
         calculateHMSF();
     }
 
-    private int limit(int value, int min, int max)
+    protected int limit(int value, int min, int max)
     {
         return (value < min) ? min : ((value > max) ? max : value);
     }
 
-    private int limitFrames(int frames)
+    protected int limitFrames(int frames)
     {
         return limit(frames, (dropFrame && (minutes % 10) != 0 && ((seconds % 60) == 0)) ? adjustmentPerMinute : 0, timecodeBase - 1);
     }
 
-    /**
-     * Sets the timecode to the provided hours, minutes, seconds and frames
-     *
-     * @param hours
-     * @param minutes
-     * @param seconds
-     * @param frames
-     */
-    public final void setHMSF(int hours, int minutes, int seconds, int frames)
+    protected void innerSetHMSF(int hours, int minutes, int seconds, int frames)
     {
         this.hours = limit(hours, 0, Integer.MAX_VALUE);
         this.minutes = limit(minutes, 0, 59);
@@ -183,39 +151,19 @@ public abstract class AbstractTimecode implements Serializable
         calculateFrameNumber();
     }
 
-    public final int getHours()
+    public int getHours()
     {
         return hours;
     }
 
-    public final void setHours(int hours)
-    {
-        this.hours = limit(hours, 0, Integer.MAX_VALUE);
-        calculateFrameNumber();
-    }
-
-    public final int getMinutes()
+    public int getMinutes()
     {
         return minutes;
     }
 
-    public final void setMinutes(int minutes)
-    {
-        this.minutes = limit(minutes, 0, 59);
-        frames = limitFrames(frames);
-        calculateFrameNumber();
-    }
-
-    public final int getSeconds()
+    public int getSeconds()
     {
         return seconds;
-    }
-
-    public final void setSeconds(int seconds)
-    {
-        this.seconds = limit(seconds, 0, 59);
-        frames = limitFrames(frames);
-        calculateFrameNumber();
     }
 
     /**
@@ -223,49 +171,12 @@ public abstract class AbstractTimecode implements Serializable
      *
      * @return frames
      */
-    public final int getFrames()
+    public int getFrames()
     {
         return frames;
     }
 
-    /**
-     * Sets the Frames component of the timecode
-     *
-     * @param frames
-     */
-    public final void setFrames(int frames)
-    {
-        this.frames = limitFrames(frames);
-        calculateFrameNumber();
-    }
-
-    public final void addHours(int hours)
-    {
-        this.hours += hours;
-        calculateFrameNumber();
-    }
-
-    public final void addMinutes(int minutes)
-    {
-        this.minutes += minutes;
-        frames = limitFrames(frames);
-        calculateFrameNumber();
-    }
-
-    public final void addSeconds(int seconds)
-    {
-        this.seconds += seconds;
-        frames = limitFrames(frames);
-        calculateFrameNumber();
-    }
-
-    public final void addFrames(long frames)
-    {
-        frameNumber += frames;
-        calculateHMSF();
-    }
-
-    private void calculateFrameNumber()
+    protected void calculateFrameNumber()
     {
         int tenMinutes = hours * 6 + minutes / 10;
         int minutes = this.minutes % 10;
@@ -278,7 +189,7 @@ public abstract class AbstractTimecode implements Serializable
         calculateHMSF();
     }
 
-    private void calculateHMSF()
+    protected void calculateHMSF()
     {
         if (timecodeBase == 0) {
             frameNumber = 0;
@@ -604,7 +515,7 @@ public abstract class AbstractTimecode implements Serializable
         this.seconds = seconds;
         this.frames = frames;
 
-        this.setDropFrame(dropFrame);
+        this.innerSetDropFrame(dropFrame);
 
         return this;
     }
@@ -647,21 +558,22 @@ public abstract class AbstractTimecode implements Serializable
             return 0;
         }
 
-        if (t1 == null) {
+        if (Timecode.isInvalid(t1)) {
             return -1;
-        }
-
-        if (t2 == null) {
+        } else if (Timecode.isInvalid(t2)) {
             return 1;
         }
 
-        long diff = t1.frameNumber - t2.frameNumber;
-        if (diff > 0) {
-            return 1;
-        } else if (diff < 0) {
+        int s1 = t1.getHours() * 3600 + t1.getMinutes() * 60 + t1.getSeconds();
+        int s2 = t2.getHours() * 3600 + t2.getMinutes() * 60 + t2.getSeconds();
+
+        if (s1 < s2) {
             return -1;
+        } else if (s1 > s2) {
+            return 1;
         }
-        return 0;
+
+        return t1.getFrames() - t2.getFrames();
     }
 
     /**
@@ -676,9 +588,10 @@ public abstract class AbstractTimecode implements Serializable
     public static TimecodeDuration calculateDuration(Timecode inPoint, Timecode outPoint)
     {
         if (!inPoint.isCompatible(outPoint)) {
-            outPoint = new Timecode(outPoint);
-            outPoint.setTimecodeBase(inPoint.getTimecodeBase());
-            outPoint.setDropFrame(inPoint.isDropFrame());
+            MutableTimecode mutableTimecode = new MutableTimecode(outPoint);
+            mutableTimecode.setTimecodeBase(inPoint.getTimecodeBase());
+            mutableTimecode.setDropFrame(inPoint.isDropFrame());
+            outPoint = new Timecode(mutableTimecode);
         }
 
         long frameNumber = outPoint.getFrameNumber() - inPoint.getFrameNumber();
@@ -701,14 +614,15 @@ public abstract class AbstractTimecode implements Serializable
     public static Timecode calculateInPoint(Timecode outPoint, TimecodeDuration duration)
     {
         if (!outPoint.isCompatible(duration)) {
-            duration = new TimecodeDuration(duration);
-            duration.setTimecodeBase(outPoint.getTimecodeBase());
-            duration.setDropFrame(outPoint.isDropFrame());
+            MutableTimecodeDuration mutableTimecodeDuration = new MutableTimecodeDuration(duration);
+            mutableTimecodeDuration.setTimecodeBase(outPoint.getTimecodeBase());
+            mutableTimecodeDuration.setDropFrame(outPoint.isDropFrame());
+            duration = new TimecodeDuration(mutableTimecodeDuration);
         }
 
-        Timecode inPoint = new Timecode(outPoint);
+        MutableTimecode inPoint = new MutableTimecode(outPoint);
         inPoint.addFrames(-duration.getFrameNumber());
-        return inPoint;
+        return new Timecode(inPoint);
     }
 
     /**
@@ -723,14 +637,15 @@ public abstract class AbstractTimecode implements Serializable
     public static Timecode calculateOutPoint(Timecode inPoint, TimecodeDuration duration)
     {
         if (!inPoint.isCompatible(duration)) {
-            duration = new TimecodeDuration(duration);
-            duration.setTimecodeBase(inPoint.getTimecodeBase());
-            duration.setDropFrame(inPoint.isDropFrame());
+            MutableTimecodeDuration mutableTimecodeDuration = new MutableTimecodeDuration(duration);
+            mutableTimecodeDuration.setTimecodeBase(inPoint.getTimecodeBase());
+            mutableTimecodeDuration.setDropFrame(inPoint.isDropFrame());
+            duration = new TimecodeDuration(mutableTimecodeDuration);
         }
 
-        Timecode outPoint = new Timecode(inPoint);
+        MutableTimecode outPoint = new MutableTimecode(inPoint);
         outPoint.addFrames(duration.getFrameNumber());
-        return outPoint;
+        return new Timecode(outPoint);
     }
 
     public boolean isCompatible(AbstractTimecode other)
@@ -747,4 +662,27 @@ public abstract class AbstractTimecode implements Serializable
                t1.getTimecodeBase() == t2.getTimecodeBase() &&
                t1.isDropFrame() == t2.isDropFrame();
     }
+
+    /**
+     * Helper function to test whether the timecode is valid, which means it is not null and valid
+     *
+     * @param timecode
+     * @return whether timecode is initialized and valid
+     */
+    public static boolean isValid(AbstractTimecode timecode)
+    {
+        return timecode != null && timecode.isValid();
+    }
+
+    /**
+     * Helper function to test whether a the timecode is invalid, which means it is either null or invalid.
+     *
+     * @param timecode
+     * @return whether timecode is not initialized or invalid
+     */
+    public static boolean isInvalid(AbstractTimecode timecode)
+    {
+        return timecode == null || timecode.isInvalid();
+    }
+
 }
