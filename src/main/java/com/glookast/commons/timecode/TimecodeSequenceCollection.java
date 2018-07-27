@@ -60,8 +60,7 @@ public class TimecodeSequenceCollection implements Serializable
             } else if (prevTimecodeSequence.timecode.getTimecodeBase() == timecode.getTimecodeBase() && prevTimecodeSequence.timecode.isDropFrame() == timecode.isDropFrame()) {
                 // check if new sequence fit's in previous one. in that case we can skip the insertion.
                 long diff = position - prevTimecodeSequence.position;
-                Timecode clone = new Timecode(prevTimecodeSequence.timecode);
-                clone.addFrames(diff);
+                Timecode clone = new Timecode(prevTimecodeSequence.timecode.getTimecodeBase(), prevTimecodeSequence.timecode.getFrameNumber() + diff, prevTimecodeSequence.timecode.isDropFrame());
 
                 if (timecode.equals(clone)) {
                     return;
@@ -77,8 +76,7 @@ public class TimecodeSequenceCollection implements Serializable
             TimecodeSequence nextTimecodeSequence = timecodeSequences.get(idx + 1);
 
             long diff = nextTimecodeSequence.position - position;
-            Timecode clone = new Timecode(timecode);
-            clone.addFrames(diff);
+            Timecode clone = new Timecode(timecode.getTimecodeBase(), timecode.getFrameNumber() + diff, timecode.isDropFrame());
 
             if (nextTimecodeSequence.timecode.equals(clone)) {
                 timecodeSequences.remove(idx + 1);
@@ -104,7 +102,7 @@ public class TimecodeSequenceCollection implements Serializable
 
                 if (truncateSize > 0) {
                     timecodeSequence.position += truncateSize;
-                    timecodeSequence.timecode.addFrames(truncateSize);
+                    timecodeSequence.timecode = new Timecode(timecodeSequence.timecode.getTimecodeBase(), timecodeSequence.timecode.getFrameNumber() + truncateSize, timecodeSequence.timecode.isDropFrame());
                 }
             }
         });
@@ -163,9 +161,7 @@ public class TimecodeSequenceCollection implements Serializable
 
                 if (timecodeSequence.timecode.isValid()) {
                     long diff = position - timecodeSequence.position;
-                    Timecode timecode = new Timecode(timecodeSequence.timecode);
-                    timecode.addFrames(diff);
-                    return timecode;
+                    return new Timecode(timecodeSequence.timecode.getTimecodeBase(), timecodeSequence.timecode.getFrameNumber() + diff, timecodeSequence.timecode.isDropFrame());
                 }
             }
         }

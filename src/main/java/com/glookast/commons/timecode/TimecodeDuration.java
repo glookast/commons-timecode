@@ -9,7 +9,7 @@ import java.io.Serializable;
 
 @JsonSerialize(using = TimecodeDurationSerializer.class)
 @JsonDeserialize(using = TimecodeDurationDeserializer.class)
-public class TimecodeDuration extends AbstractTimecode implements Serializable
+public final class TimecodeDuration extends AbstractTimecode implements Serializable
 {
     private static final long serialVersionUID = 1L;
 

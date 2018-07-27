@@ -115,7 +115,7 @@ public class TimecodeTest
         }
     }
 
-    private void testTimecodeEquality(Timecode tc1, Timecode tc2)
+    private void testTimecodeEquality(AbstractTimecode tc1, AbstractTimecode tc2)
     {
         assertTrue(tc1.getTimecodeBase() == tc2.getTimecodeBase());
         assertTrue(tc1.isDropFrame() == tc2.isDropFrame());
@@ -184,7 +184,7 @@ public class TimecodeTest
         testTimecodeEquality(tc1, tc3);
 
         String tc4Str = tc1.toString(StringType.MILLISECONDS);
-        Timecode tc4 = Timecode.valueOf(tc4Str, timecodeBase, StringType.MILLISECONDS);
+        MutableTimecode tc4 = MutableTimecode.valueOf(tc4Str, timecodeBase, StringType.MILLISECONDS);
         tc4.setDropFrame(tc1.isDropFrame());
         testTimecodeEquality(tc1, tc4);
 
@@ -328,14 +328,14 @@ public class TimecodeTest
     @Test
     public void testTimecodeConversion()
     {
-        Timecode tc1 = new Timecode(30, 0, 1, 0, 0, false);
+        MutableTimecode tc1 = new MutableTimecode(30, 0, 1, 0, 0, false);
         tc1.setDropFrame(true);
         assertTrue(tc1.hours == 0);
         assertTrue(tc1.minutes == 1);
         assertTrue(tc1.seconds == 0);
         assertTrue(tc1.frames == 2);
 
-        Timecode tc2 = new Timecode(30, 10, 1, 5, 29, true);
+        MutableTimecode tc2 = new MutableTimecode(30, 10, 1, 5, 29, true);
         Timecode tc3 = new Timecode(tc2);
 
         tc2.setTimecodeBase(25);
