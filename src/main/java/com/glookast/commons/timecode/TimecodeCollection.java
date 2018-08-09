@@ -77,10 +77,10 @@ public class TimecodeCollection implements Serializable
 
     public TimecodeCollection(TimecodeCollection timecodeCollection)
     {
-        this.ltc = new Timecode(timecodeCollection.ltc);
-        this.vitc = new Timecode(timecodeCollection.vitc);
-        this.tod = new Timecode(timecodeCollection.tod);
-        this.rs422 = new Timecode(timecodeCollection.rs422);
+        this.ltc = timecodeCollection.ltc;
+        this.vitc = timecodeCollection.vitc;
+        this.tod = timecodeCollection.tod;
+        this.rs422 = timecodeCollection.rs422;
     }
 
     /**
@@ -169,6 +169,21 @@ public class TimecodeCollection implements Serializable
     public void setRs422(Timecode value)
     {
         this.rs422 = value == null ? new Timecode() : value;
+    }
+
+    public Timecode get(TimecodeSource timecodeSource)
+    {
+        switch (timecodeSource) {
+            case LTC:
+                return ltc;
+            case VITC:
+                return vitc;
+            case TOD:
+                return tod;
+            case RS_422:
+                return rs422;
+        }
+        return new Timecode();
     }
 
     @Override
