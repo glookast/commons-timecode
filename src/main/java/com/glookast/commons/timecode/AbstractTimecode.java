@@ -557,9 +557,9 @@ public abstract class AbstractTimecode implements Serializable
         if (Timecode.isInvalid(t1) && Timecode.isInvalid(t2)) {
             return 0;
         } else if (Timecode.isInvalid(t1)) {
-            return -1;
-        } else if (Timecode.isInvalid(t2)) {
             return 1;
+        } else if (Timecode.isInvalid(t2)) {
+            return -1;
         }
 
         int s1 = t1.getHours() * 3600 + t1.getMinutes() * 60 + t1.getSeconds();
