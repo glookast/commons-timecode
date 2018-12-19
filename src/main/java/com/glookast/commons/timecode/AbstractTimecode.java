@@ -554,11 +554,9 @@ public abstract class AbstractTimecode implements Serializable
 
     public static int compare(AbstractTimecode t1, AbstractTimecode t2)
     {
-        if (t1 == null && t2 == null) {
+        if (Timecode.isInvalid(t1) && Timecode.isInvalid(t2)) {
             return 0;
-        }
-
-        if (Timecode.isInvalid(t1)) {
+        } else if (Timecode.isInvalid(t1)) {
             return -1;
         } else if (Timecode.isInvalid(t2)) {
             return 1;
